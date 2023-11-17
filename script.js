@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const GAME_SIZE = 400; // Declare and initialize GAME_SIZE at the beginning
+    const GAME_SIZE = 400;
     const SNAKE_SPEED = 5; // moves per second
     const SEGMENT_SIZE = 10;
     
@@ -8,10 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let food = { x: getRandomCoordinate(), y: getRandomCoordinate() };
     let direction = { x: 0, y: 0 };
     let lastRenderTime = 0;
-    let growthCounter = 0;
+    let gameStarted = false;
 
     function main(currentTime) {
-        if (growthCounter >= 1000) return; // Stop the game after 1000px growth
+        if (!gameStarted) return;
 
         window.requestAnimationFrame(main);
         const secondsSinceLastRender = (currentTime - lastRenderTime) / 1000;
@@ -25,30 +25,28 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateGame() {
         const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
         snake.unshift(head);
-        
+        snake.pop(); // Remove the last segment
+
         // Check for food consumption
         if (head.x === food.x && head.y === food.y) {
-            growthCounter += SEGMENT_SIZE;
+            snake.push({}); // Add a new segment
             food = { x: getRandomCoordinate(), y: getRandomCoordinate() };
-        } else {
-            snake.pop();
         }
     }
 
     function drawGame() {
         gameArea.innerHTML = '';
-        snake.forEach((segment, index) => {
+        snake.forEach(segment => {
             const snakeElement = document.createElement('div');
-            snakeElement.style.gridRowStart = segment.y;
-            snakeElement.style.gridColumnStart = segment.x;
+            snakeElement.style.left = segment.x + 'px';
+            snakeElement.style.top = segment.y + 'px';
             snakeElement.classList.add('snake');
-            if (index === 0) snakeElement.classList.add('snake-head');
             gameArea.appendChild(snakeElement);
         });
 
         const foodElement = document.createElement('div');
-        foodElement.style.gridRowStart = food.y;
-        foodElement.style.gridColumnStart = food.x;
+        foodElement.style.left = food.x + 'px';
+        foodElement.style.top = food.y + 'px';
         foodElement.classList.add('food');
         gameArea.appendChild(foodElement);
     }
@@ -57,10 +55,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return Math.floor(Math.random() * (GAME_SIZE / SEGMENT_SIZE)) * SEGMENT_SIZE;
     }
 
-    window.requestAnimationFrame(main);
-
     window.addEventListener('keydown', e => {
         switch (e.key) {
+            case 'Enter':
+                if (!gameStarted) {
+                    gameStarted = true;
+                    window.requestAnimationFrame(main);
+                }
+                break;
             case 'ArrowUp': direction = { x: 0, y: -SEGMENT_SIZE }; break;
             case 'ArrowDown': direction = { x: 0, y: SEGMENT_SIZE }; break;
             case 'ArrowLeft': direction = { x: -SEGMENT_SIZE, y: 0 }; break;
@@ -68,4 +70,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
 
