@@ -1,14 +1,14 @@
-
 document.addEventListener('DOMContentLoaded', () => {
+    const GAME_SIZE = 400; // Declare and initialize GAME_SIZE at the beginning
+    const SNAKE_SPEED = 5; // moves per second
+    const SEGMENT_SIZE = 10;
+    
     const gameArea = document.getElementById('gameArea');
     let snake = [{ x: 200, y: 200 }];
     let food = { x: getRandomCoordinate(), y: getRandomCoordinate() };
     let direction = { x: 0, y: 0 };
     let lastRenderTime = 0;
     let growthCounter = 0;
-    const SNAKE_SPEED = 5; // moves per second
-    const GAME_SIZE = 400;
-    const SEGMENT_SIZE = 10;
 
     function main(currentTime) {
         if (growthCounter >= 1000) return; // Stop the game after 1000px growth
