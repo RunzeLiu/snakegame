@@ -3,7 +3,7 @@
     height: 400px;
     border: 1px solid black;
     position: relative;
-    background-image: url('path_to_grass_texture.jpg');
+    background-image: url('lawn.jpg');
     background-size: cover;
 }
 
